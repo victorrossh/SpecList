@@ -12,22 +12,21 @@
 
 new g_iHudSync;
 new bool:gShowSpecList[33];
-
 new gCvarOn;
 new gCvarImmunity;
 
 public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	
+
 	gCvarOn = register_cvar("amx_speclist", "1");
 	gCvarImmunity = register_cvar("amx_speclist_immunity", "1");
 
 	register_clcmd("say /speclist", "toggleSpecList");
 	register_clcmd("say_team /speclist", "toggleSpecList");
-	
-	g_iHudSync = CreateHudSyncObj();
 
+	g_iHudSync = CreateHudSyncObj();
+	
 	set_task(UPDATEINTERVAL, "SpecListHud", 123094, "", 0, "b");
 }
 
@@ -68,6 +67,7 @@ public SpecListHud()
 	static szHud[1102];
 	static szName[34];
 	static bool:hasSpectators;
+	static bool:gShouldShow[33];
 
 	for (new alive = 1; alive <= MAX_PLAYERS; alive++)
 	{
@@ -75,7 +75,9 @@ public SpecListHud()
 
 		hasSpectators = false;
 		szHud[0] = 0;
+		for (new i = 1; i <= MAX_PLAYERS; i++) gShouldShow[i] = false;
 
+		gShouldShow[alive] = true;
 		get_user_name(alive, szName, charsmax(szName));
 		formatex(szHud, charsmax(szHud), "Spectating: %s^n", szName);
 
@@ -86,6 +88,8 @@ public SpecListHud()
 
 			if (pev(dead, pev_iuser2) == alive)
 			{
+				gShouldShow[dead] = true;
+
 				if (get_pcvar_num(gCvarImmunity) && (get_user_flags(dead) & ADMIN_FLAG))
 					continue;
 
@@ -100,7 +104,7 @@ public SpecListHud()
 		{
 			for (new i = 1; i <= MAX_PLAYERS; i++)
 			{
-				if (is_user_connected(i) && gShowSpecList[i])
+				if (gShouldShow[i] && gShowSpecList[i] && is_user_connected(i))
 				{
 					set_hudmessage(128, 128, 128, 0.75, 0.15, 0, 0.0, UPDATEINTERVAL + 0.1, 0.0, 0.0, -1);
 					ShowSyncHudMsg(i, g_iHudSync, szHud);
@@ -108,5 +112,6 @@ public SpecListHud()
 			}
 		}
 	}
+
 	return PLUGIN_CONTINUE;
 }
