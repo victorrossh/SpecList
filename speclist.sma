@@ -15,8 +15,7 @@ new bool:gShowSpecList[33];
 new gCvarOn;
 new gCvarImmunity;
 
-public plugin_init()
-{
+public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	gCvarOn = register_cvar("amx_speclist", "1");
@@ -30,38 +29,32 @@ public plugin_init()
 	set_task(UPDATEINTERVAL, "SpecListHud", 123094, "", 0, "b");
 }
 
-public plugin_natives()
-{
+public plugin_natives(){
 	register_library("spec_list");
 	register_native("toggle_speclist", "native_toggle_speclist");
 	register_native("get_bool_speclist", "native_get_bool_speclist");
 }
 
-public native_get_bool_speclist(NumParams)
-{
+public native_get_bool_speclist(NumParams){
 	new id = get_param(1);
 	return gShowSpecList[id];
 }
 
-public native_toggle_speclist(NumParams)
-{
+public native_toggle_speclist(NumParams){
 	new id = get_param(1);
 	toggleSpecList(id);
 }
 
-public client_putinserver(id)
-{
+public client_putinserver(id){
 	gShowSpecList[id] = true;
 }
 
-public toggleSpecList(id)
-{
+public toggleSpecList(id){
 	gShowSpecList[id] = !gShowSpecList[id];
 	return PLUGIN_HANDLED;
 }
 
-public SpecListHud()
-{
+public SpecListHud(){
 	if (!get_pcvar_num(gCvarOn)) return PLUGIN_CONTINUE;
 
 	static szHud[1102];
@@ -69,8 +62,7 @@ public SpecListHud()
 	static bool:hasSpectators;
 	static bool:gShouldShow[33];
 
-	for (new alive = 1; alive <= MAX_PLAYERS; alive++)
-	{
+	for (new alive = 1; alive <= MAX_PLAYERS; alive++){
 		if (!is_user_alive(alive)) continue;
 
 		hasSpectators = false;
@@ -81,13 +73,11 @@ public SpecListHud()
 		get_user_name(alive, szName, charsmax(szName));
 		formatex(szHud, charsmax(szHud), "Spectating: %s^n", szName);
 
-		for (new dead = 1; dead <= MAX_PLAYERS; dead++)
-		{
+		for (new dead = 1; dead <= MAX_PLAYERS; dead++){
 			if (!is_user_connected(dead) || is_user_alive(dead) || is_user_bot(dead))
 				continue;
 
-			if (pev(dead, pev_iuser2) == alive)
-			{
+			if (pev(dead, pev_iuser2) == alive){
 				gShouldShow[dead] = true;
 
 				if (get_pcvar_num(gCvarImmunity) && (get_user_flags(dead) & ADMIN_FLAG))
@@ -100,18 +90,14 @@ public SpecListHud()
 			}
 		}
 
-		if (hasSpectators)
-		{
-			for (new i = 1; i <= MAX_PLAYERS; i++)
-			{
-				if (gShouldShow[i] && gShowSpecList[i] && is_user_connected(i))
-				{
+		if (hasSpectators){
+			for (new i = 1; i <= MAX_PLAYERS; i++){
+				if (gShouldShow[i] && gShowSpecList[i] && is_user_connected(i)){
 					set_hudmessage(128, 128, 128, 0.75, 0.15, 0, 0.0, UPDATEINTERVAL + 0.1, 0.0, 0.0, -1);
 					ShowSyncHudMsg(i, g_iHudSync, szHud);
 				}
 			}
 		}
 	}
-
 	return PLUGIN_CONTINUE;
 }
