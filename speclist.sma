@@ -20,11 +20,11 @@ public plugin_init()
 {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
-	gCvarOn = register_cvar("amx_speclist", "1", 0, 0.0);
-	gCvarImmunity = register_cvar("amx_speclist_immunity", "1", 0, 0.0);
+	gCvarOn = register_cvar("amx_speclist", "1");
+	gCvarImmunity = register_cvar("amx_speclist_immunity", "1");
 
-	register_clcmd("say /speclist", "toggleSpecList", -1, "");
-	register_clcmd("say_team /speclist", "toggleSpecList", -1, "");
+	register_clcmd("say /speclist", "toggleSpecList");
+	register_clcmd("say_team /speclist", "toggleSpecList");
 	
 	g_iHudSync = CreateHudSyncObj();
 
