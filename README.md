@@ -1,22 +1,28 @@
 # SpecList - AMX Mod X Plugin
 
-## Overview
-Simple spectator list HUD plugin for Counter-Strike 1.6 servers.  
-Displays a list of players currently spectating each alive player.
-
-## Features
-- Shows "Spectating: [player name]" + list of spectators in HUD
-- Toggle on/off with `/speclist`
-- Admins with immunity flag are hidden from the list by default when `amx_speclist_immunity` is 1
-- Clean gray HUD text
-- Efficient task-based update every 1 second
-
-## Commands
-- `/speclist` → Toggle spectator list visibility (ON/OFF)
-
-## CVARs (server.cfg / amxx.cfg)
-- `amx_speclist "1"` → Enable/disable the plugin (1 = on, 0 = off)  
-- `amx_speclist_immunity "1"` → Hide admins with immunity flag from spec list by default (1 = on, 0 = off)
-
 ## Credits
 - **ftl~** 
+- **Mrshark45**
+
+## Overview
+Simple spectator list HUD plugin for Counter-Strike 1.6 servers.  
+Displays "Spectating: [player name]" followed by the list of players currently spectating each alive player — shown only to the alive player and their spectators.
+
+## Features
+- Clean HUD display showing who is spectating each alive player
+- Gray text positioned at the top-right area
+- Players can toggle visibility with `/speclist`
+- Admins can hide themselves from the spec list using `/hide`
+- Updates every ~1 second using an efficient repeating task
+- Natives support for other plugins:
+  - `toggle_speclist(id)` — Toggle display for a player
+  - `get_bool_speclist(id)` — Check if display is enabled for a player
+- No bots are shown in the list
+- Only shows real spectators (not alive players or disconnected users)
+
+## Commands
+- `say /speclist` or `say_team /speclist` → Toggle your spectator list visibility (ON/OFF)
+- `say /hide` → **Admin only** — Toggle whether you appear in other players' spec lists
+
+## CVARs
+- `amx_speclist "1"` → Enable/disable the plugin (1 = on, 0 = off)  
