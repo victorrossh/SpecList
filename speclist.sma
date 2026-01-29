@@ -1,32 +1,35 @@
 #include <amxmodx>
+#include <amxmisc>
 #include <fakemeta>
 
 #define PLUGIN "SpecList"
 #define VERSION "1.0"
-#define AUTHOR "ftl~"
+#define AUTHOR "ftl~ & MrShark45"
 
 #define UPDATEINTERVAL 1.0
 
-#define ADMIN_FLAG ADMIN_IMMUNITY
-#define MAX_PLAYERS 32
+#define TASK_ID 123094
 
 new g_iHudSync;
 new bool:gShowSpecList[33];
+new bool:gHidePlayer[33];
 new gCvarOn;
-new gCvarImmunity;
+new gEnabled;
 
 public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	gCvarOn = register_cvar("amx_speclist", "1");
-	gCvarImmunity = register_cvar("amx_speclist_immunity", "1");
+	bind_pcvar_num(gCvarOn, gEnabled);
 
 	register_clcmd("say /speclist", "toggleSpecList");
 	register_clcmd("say_team /speclist", "toggleSpecList");
 
+	register_clcmd("say /hide", "hidePlayer");
+
 	g_iHudSync = CreateHudSyncObj();
 	
-	set_task(UPDATEINTERVAL, "SpecListHud", 123094, "", 0, "b");
+	set_task(UPDATEINTERVAL, "SpecListHud", TASK_ID, "", 0, "b");
 }
 
 public plugin_natives(){
@@ -47,6 +50,7 @@ public native_toggle_speclist(NumParams){
 
 public client_putinserver(id){
 	gShowSpecList[id] = true;
+	gHidePlayer[id] = false;
 }
 
 public toggleSpecList(id){
@@ -54,11 +58,20 @@ public toggleSpecList(id){
 	return PLUGIN_HANDLED;
 }
 
-public SpecListHud(){
-	if (!get_pcvar_num(gCvarOn)) return PLUGIN_CONTINUE;
+public hidePlayer(id)
+{
+	if(!is_user_admin(id)) return PLUGIN_HANDLED;
 
-	static szHud[1102];
-	static szName[34];
+	gHidePlayer[id] = !gHidePlayer[id];
+
+	return PLUGIN_HANDLED;
+}
+
+public SpecListHud(){
+	if(!gEnabled) return PLUGIN_CONTINUE;
+	
+	static szHud[1024];
+	static szName[32];
 	static bool:hasSpectators;
 	static bool:gShouldShow[33];
 
@@ -80,7 +93,7 @@ public SpecListHud(){
 			if (pev(dead, pev_iuser2) == alive){
 				gShouldShow[dead] = true;
 
-				if (get_pcvar_num(gCvarImmunity) && (get_user_flags(dead) & ADMIN_FLAG))
+				if (gHidePlayer[dead])
 					continue;
 
 				get_user_name(dead, szName, charsmax(szName));
