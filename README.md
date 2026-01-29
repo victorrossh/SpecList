@@ -22,7 +22,7 @@ Displays "Spectating: [player name]" followed by the list of players currently s
 
 ## Commands
 - `say /speclist` or `say_team /speclist` → Toggle your spectator list visibility (ON/OFF)
-- `say /hide` → **Admin only** — Toggle whether you appear in other players' spec lists
+- `say /hide` or `say_team /hide` → **Admin only** — Toggle whether you appear in other players' spec lists
 
 ## CVARs
 - `amx_speclist "1"` → Enable/disable the plugin (1 = on, 0 = off)  
