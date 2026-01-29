@@ -26,6 +26,7 @@ public plugin_init(){
 	register_clcmd("say_team /speclist", "toggleSpecList");
 
 	register_clcmd("say /hide", "hidePlayer");
+	register_clcmd("say_team /hide", "hidePlayer");
 
 	g_iHudSync = CreateHudSyncObj();
 	
