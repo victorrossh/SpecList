@@ -51,8 +51,8 @@ public native_toggle_speclist(NumParams){
 
 public client_putinserver(id){
 	gShowSpecList[id] = true;
-	gHidePlayer[id] = true; // Admins start hidden (invisible) in speclist by default.
-							// To appear in the speclist HUD, admins must use the /hide command (which toggles the state).
+	gHidePlayer[id] = bool:is_user_admin(id); // Admins start hidden (invisible) in speclist by default.
+											  // To appear in the speclist HUD, admins must use the /hide command (which toggles the state).
 }
 
 public toggleSpecList(id){
